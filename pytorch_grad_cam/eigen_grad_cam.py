@@ -4,11 +4,12 @@ import torch
 from pytorch_grad_cam.base_cam import BaseCAM
 from pytorch_grad_cam.utils.svd_on_activations import get_2d_projection
 
-# https://arxiv.org/abs/2008.00299
-class EigenCAM(BaseCAM):
+# Like Eigen CAM: https://arxiv.org/abs/2008.00299
+# But multiply the activations x gradients
+class EigenGradCAM(BaseCAM):
     def __init__(self, model, target_layer, use_cuda=False, 
         reshape_transform=None):
-        super(EigenCAM, self).__init__(model, target_layer, use_cuda, 
+        super(EigenGradCAM, self).__init__(model, target_layer, use_cuda, 
             reshape_transform)
 
     def get_cam_image(self,
@@ -17,4 +18,4 @@ class EigenCAM(BaseCAM):
                       activations,
                       grads,
                       eigen_smooth):
-        return get_2d_projection(activations)
+        return get_2d_projection(grads*activations)
